@@ -37,7 +37,6 @@ composer create-project drupal/recommended-project:^${DRUPAL_MAJOR:-9} drupal
 # Add Drush and a Drush base uri
 cd drupal
 mkdir config config/sync drush
-printf "options:\n  uri: '${GITPOD_WORKSPACE_URL[@]/https:\/\//https:\/\/8888-}'" > ./drush/drush.yml
 composer require drush/drush
 
 # Install the site

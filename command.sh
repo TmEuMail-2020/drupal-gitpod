@@ -19,7 +19,10 @@ echo "You'll be notified once your instance is ready."
 echo 'You can watch the progress in the second terminal window ("Start & Run")'.
 gp await-port 8888
 
+cd drupal
+# below was from setup.sh, which caused incorrect url
+# since that is for init stage for gitpod, at prebuild url will be different
+printf "options:\n  uri: '${GITPOD_WORKSPACE_URL[@]/https:\/\//https:\/\/8888-}'" > ./drush/drush.yml
 # Show instructions for browsing / login
 printf "\nYour Drupal instance is ready. Please open the server port using the popup in the lower right corner\nor use this Drush link to login immediately (Cmd/Ctrl+Click):\n\n"
-cd drupal
-drush uli
+vendor/bin/drush uli
