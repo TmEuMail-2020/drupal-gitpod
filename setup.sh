@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 clear
+# this project was set up as workspace context url with parameter to pass in as env var,
+#   ex: https://gitpod.io/new/#DRUPAL_MAJOR=10/https://github.com/drubb/drupal-gitpod
+#   but at prebuild context, then there is no env var, hence it default back to 9
+#   now use gitpod project env var to specifically set, hence below to observe
+#   original use case of using url parameter should work too since there is gitpod project env
+echo current DRUPAL_MAJOR: "$DRUPAL_MAJOR"
 
 # Create a MySQL user and Drupal database using default credentials for site install command.
 while ! mysqladmin ping --silent; do
@@ -35,7 +41,8 @@ printf "options:\n  uri: '${GITPOD_WORKSPACE_URL[@]/https:\/\//https:\/\/8888-}'
 composer require drush/drush
 
 # Install the site
-drush si -y --site-name="Drupal ${DRUPAL_MAJOR} on Gitpod" --account-pass=admin
+# drush-launcher is abandoned, now all use traditional path syntax to invoke drush
+vendor/bin/drush si -y --site-name="Drupal ${DRUPAL_MAJOR} on Gitpod" --account-pass=admin
 
 # Add some tweaks to settings.php
 cd ./web/sites/default
@@ -45,4 +52,5 @@ printf "\$settings['config_sync_directory'] = '../config/sync';\n" >> settings.p
 chmod 0444 settings.php
 
 # Run cron to get rid of annoying message on status page
-drush cron
+cd ${GITPOD_REPO_ROOT}/drupal
+vendor/bin/drush cron
